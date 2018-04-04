@@ -4,7 +4,6 @@ module.exports = {
 	aliases: ['inv'],
 	description: 'PLACEHOLDER',
 	usage: 'PLACEHOLDER',
-	permission: 'everyone',
 	guildOnly: true,
 	async execute(message, args) {
 		const target = message.mentions.users.first() || message.author;

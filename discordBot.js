@@ -8,8 +8,8 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 
-const { Users, CurrencyShop } = require('./dbObjects.js');
-const { currency } = require('./Reflect.js');
+const { objectsSync, Users, Guilds } = require('./dbObjects.js');
+const { UsersCache, GuildsCache } = require('./dbCache.js');
 
 // load all commands
 const commandFiles = fs.readdirSync('./commands');
@@ -34,26 +34,40 @@ function evaluate(message, args) {
 module.exports.evaluate = evaluate;
 module.exports.client = client;
 
+client.on('ready', async() => {
+	console.log(`Logged in as ${client.user.tag}!`);	
+	// alter db models if changed
+	await objectsSync();
+	// cache users from database
+	(await Users.findAll()).forEach(u => UsersCache.set(u.user_id, u));
+	// cache guilds from database
+	(await Guilds.findAll()).forEach(g => GuildsCache.set(g.guild_id, g));
+	// get all guilds this bot is in and add them to database if needed
+	client.guilds.forEach((guild, id) => {
+		GuildsCache.addIfNotFound(id);
+	});
+	console.log(GuildsCache);
+	console.log(`Database synced`);
+});
 client.on('unhandledRejection', (reason, p) => {
 	console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
-
-client.on('ready', async() => {
-	console.log(`Logged in as ${client.user.tag}!`);
-	
-	// sync currency to database
-	const storedBalances = await Users.findAll();
-	storedBalances.forEach(b => currency.set(b.user_id, b));
-});
-
 client.on('message', message => {
 	// if a bot sent message
 	if (message.author.bot) return;
-    currency.add(message.author.id, 1);
+	
+	// add 1 balance to this user
+    UsersCache.add(message.author.id, 1);
+	
+	// if it's a DM, use bot's default prefix, else use guild prefix
+	if (message.channel.type !== 'text')
+		var prefix = config.prefix;
+	else
+		var prefix = GuildsCache.get(message.guild.id).prefix;
 	
 	// process the message
-	if (!message.content.startsWith(config.prefix)) return;
-	const args = message.content.slice(config.prefix.length).split(/ +/);
+	if (!message.content.startsWith(prefix)) return;
+	const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
 	
 	// check if it's an actual command
@@ -98,6 +112,18 @@ client.on('message', message => {
 		console.error(error);
 		message.reply(`there was an error trying to execute the  \`${command.name}\` command.`);
 	}
+});
+client.on("guildCreate", guild => {
+	// This event triggers when the bot joins a guild.
+	//console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+	//client.user.setActivity(`Serving ${client.guilds.size} servers`);
+	GuildsCache.addIfNotFound(guild.id);
+});
+
+client.on("guildDelete", guild => {
+	// this event triggers when the bot is removed from a guild.
+	//console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
+	//client.user.setActivity(`Serving ${client.guilds.size} servers`);
 });
 	
 client.login(config.token);

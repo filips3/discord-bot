@@ -10,8 +10,15 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 const Users = sequelize.import('models/Users');
 const CurrencyShop = sequelize.import('models/CurrencyShop');
 const UserItems = sequelize.import('models/UserItems');
-
 UserItems.belongsTo(CurrencyShop, { foreignKey: 'item_id', as: 'item' });
+const Guilds = sequelize.import('models/Guilds');
+
+async function objectsSync() {
+	try { await sequelize.sync(); }
+	catch (e) { console.log(e); }
+	try { await sequelize.sync({alter:true}); }
+	catch (e) { console.log(e); }
+}
 
 Users.prototype.addItem = async function(item) {
     const userItem = await UserItems.findOne({
@@ -33,4 +40,4 @@ Users.prototype.getItems = function() {
     });
 };
 
-module.exports = { Users, CurrencyShop, UserItems };
+module.exports = { objectsSync, Users, CurrencyShop, UserItems, Guilds };

@@ -1,8 +1,8 @@
 module.exports = {
 	name: 'sayd',
+	aliases: ['saydelete'],
 	description: 'Copy your message and remove it.',
 	usage: '<message>...',
-	permission: 'everyone',
 	execute(message, args) {
 		message.delete();
 		if (!args.length) {

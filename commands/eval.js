@@ -3,7 +3,7 @@ const root = require('../discordBot.js');
 module.exports = {
 	name: 'eval',
 	description: 'Evaluate string as javascript.',
-	permission: 'bot-owner',
+	permissionUser: 'BOT_OWNER',
 	cooldown: 0,
 	execute(message, args) {
 		if(message.author.id !== ownerID) return;

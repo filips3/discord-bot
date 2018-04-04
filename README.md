@@ -18,12 +18,7 @@ $ npm install --save sequelize
 $ npm install --save sqlite3
 ```
 
-Next, you should build the database (one-time only)
-```
-$ node dbInit.js
-```
-
-Finally, enter your bot's token and your Discord user id into config.json and write this command
+Now you can enter your bot's token and your Discord user id into config.json and write this command
 ```
 $ node discordBot.js
 ```

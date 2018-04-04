@@ -5,7 +5,6 @@ module.exports = {
     aliases: ['commands'],
     description: 'List all commands or info about a specific command.',
     usage: '<command name>',
-	permission: 'everyone',
     execute(message, args) {
         const { commands } = message.client;
 		const data = [];
@@ -13,9 +12,11 @@ module.exports = {
 		// if no command specified
 		if (!args.length) {
 			data.push('Here\'s a list of all standard commands:');
-			data.push(commands.filter(command => command.permission === 'everyone').map(command => command.name).join(', '));
+			data.push(commands.filter(command => 
+				command.hasOwnProperty('permissionUser') === false).map(command => command.name).join(', '));
 			data.push('And admin commands:');
-			data.push(commands.filter(command => command.permission === 'admin').map(command => command.name).join(', '));
+			data.push(commands.filter(command =>
+				command.hasOwnProperty('permissionUser') === true && command.permissionUser !== 'BOT_OWNER').map(command => command.name).join(', '));
 			data.push(`\nYou can send \`${config.prefix}help <command name>\` to get info on a specific command!`);
 			
 			message.author.send(data, { split: true })
@@ -37,7 +38,8 @@ module.exports = {
 			if (command.description) data.push(`**Description:** ${command.description}`);
 			if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 			if (command.usage) data.push(`**Usage:** ${config.prefix}${command.name} ${command.usage}`);
-			if (command.permission) data.push(`**Can be used by:** ${command.permission}`);
+			if (command.permissionUser) data.push(`**Required permissions(user):** ${command.permissionUser}`);
+			if (command.permissionBot) data.push(`**Required permissions(bot):** ${command.permissionBot}`);
 			
 			var cooldownAmount;
 			if (command.cooldown !== undefined) cooldownAmount = command.cooldown;
