@@ -5,7 +5,7 @@ module.exports = {
 	description: 'PLACEHOLDER',
 	usage: 'PLACEHOLDER',
 	guildOnly: true,
-	async execute(message, args) {
+	async execute(client, message, args) {
 		const target = message.mentions.users.first() || message.author;
 		const user = await Users.findOne({ where: { user_id: target.id } });
 		const items = await user.getItems();

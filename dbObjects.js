@@ -12,12 +12,12 @@ const CurrencyShop = sequelize.import('models/CurrencyShop');
 const UserItems = sequelize.import('models/UserItems');
 UserItems.belongsTo(CurrencyShop, { foreignKey: 'item_id', as: 'item' });
 const Guilds = sequelize.import('models/Guilds');
+const GuildCommands = sequelize.import('models/GuildCommands');
+GuildCommands.belongsTo(Guilds, { foreignKey: 'guild_id', as: 'guild' });
 
 async function objectsSync() {
-	try { await sequelize.sync(); }
-	catch (e) { console.log(e); }
-	try { await sequelize.sync({alter:true}); }
-	catch (e) { console.log(e); }
+	sequelize.sync().catch(console.error);
+	sequelize.sync({ alter:true }).catch(console.error);
 }
 
 Users.prototype.addItem = async function(item) {
@@ -32,7 +32,6 @@ Users.prototype.addItem = async function(item) {
 
     return UserItems.create({ user_id: this.user_id, item_id: item.id, amount: 1 });
 };
-
 Users.prototype.getItems = function() {
     return UserItems.findAll({
         where: { user_id: this.user_id },
@@ -40,4 +39,4 @@ Users.prototype.getItems = function() {
     });
 };
 
-module.exports = { objectsSync, Users, CurrencyShop, UserItems, Guilds };
+module.exports = { objectsSync, Users, CurrencyShop, UserItems, Guilds, GuildCommands };

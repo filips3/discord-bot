@@ -5,10 +5,8 @@ module.exports = {
 	description: 'Returns your current amount of 🍰.',
 	usage: 'PLACEHOLDER',
 	guildOnly: true,
-	execute(message, args) {
-		if (!args.length) {
-			return message.channel.send(`${message.author.tag} has ${UsersCache.getBalance(message.author.id)}🍰`);
-		}
+	execute(client, message, args) {
+		if (!args.length) return message.channel.send(`${message.author.tag} has ${UsersCache.getBalance(message.author.id)}🍰`);
 		switch(args.length) {
 			case 1:
 				const target = message.mentions.users.first();

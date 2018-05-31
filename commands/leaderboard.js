@@ -1,13 +1,11 @@
 const { UsersCache } = require('../dbCache.js');
-const root = require('../discordBot.js');
 module.exports = {
 	name: 'leaderboard',
     aliases: ['top'],
 	description: 'PLACEHOLDER',
 	usage: 'PLACEHOLDER',
 	guildOnly: true,
-	execute(message, args) {
-		const client = root.client;
+	execute(client, message, args) {
 		return message.channel.send(
 			UsersCache.sort((a, b) => b.balance - a.balance)
 				.filter(user => client.users.has(user.user_id))

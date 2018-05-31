@@ -1,11 +1,10 @@
 const config = require('../config.json');
-const root = require('../discordBot.js');
 module.exports = {
 	name: 'help',
     aliases: ['commands'],
     description: 'List all commands or info about a specific command.',
     usage: '<command name>',
-    execute(message, args) {
+    execute(client, message, args) {
         const { commands } = message.client;
 		const data = [];
 		
@@ -29,8 +28,8 @@ module.exports = {
 		}
 		else {
 			// check if it's an actual command
-			const command = root.client.commands.get(args[0])
-				|| root.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
+			const command = client.commands.get(args[0])
+				|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 			if (!command) return message.reply(`command ${command.name} does not exist`);
 
 			data.push(`**Name:** ${command.name}`);

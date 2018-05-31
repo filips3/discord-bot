@@ -18,11 +18,7 @@ $ npm install --save sequelize
 $ npm install --save sqlite3
 ```
 
-Now you can enter your bot's token and your Discord user id into config.json and write this command
+Now you can enter your bot's token and your Discord user id into config.json and start the bot using this command
 ```
 $ node discordBot.js
 ```
-
-## To-do
-
-Add licenses

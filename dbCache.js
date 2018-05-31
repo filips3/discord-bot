@@ -24,8 +24,8 @@ Reflect.defineProperty(UsersCache, 'getBalance', {
 const GuildsCache = new Discord.Collection();
 Reflect.defineProperty(GuildsCache, 'addIfNotFound', {
 	value: function addIfNotFound(id) {
-		Guilds.findOrCreate({ where: { guild_id: id } }).
-			spread((guild, created) => {
+		Guilds.findOrCreate({ where: { guild_id: id } })
+			.spread((guild, created) => {
 				GuildsCache.set(guild.id, guild);
 			});
 	},

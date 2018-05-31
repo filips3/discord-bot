@@ -5,7 +5,7 @@ module.exports = {
 	description: 'Evaluate string as javascript.',
 	permissionUser: 'BOT_OWNER',
 	cooldown: 0,
-	execute(message, args) {
+	execute(client, message, args) {
 		if(message.author.id !== ownerID) return;
 		root.evaluate(message, args);
 	}

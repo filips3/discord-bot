@@ -5,7 +5,7 @@ module.exports = {
 	description: 'PLACEHOLDER',
 	usage: 'PLACEHOLDER',
 	guildOnly: true,
-	async execute(message, args) {
+	async execute(client, message, args) {
 		if (!args.length) {
 			const items = await CurrencyShop.findAll();
 			return message.channel.send(items.map(i => `${i.name}: ${i.cost}🍰`).join('\n'), { code: true });
@@ -29,8 +29,6 @@ module.exports = {
 
 			return message.channel.send(`You've bought a ${item.name}`);
 		}
-		else {
-			return message.channel.send(`Incorrect command arguments`);
-		}
+		return message.channel.send(`Incorrect command arguments`);
 	}
 };
